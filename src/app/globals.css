@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  margin: 0;
+  padding: 0;
+  outline: none !important;
+  outline: 0 !important;
+  box-sizing: border-box;
+  transition: all .25s ease-in-out;
+}
+
+html, body {
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .leading-loose {
+    line-height: 1.8;
+  }
+
+  .leading-snug {
+    line-height: 1.6;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .container {
+    min-width: 100% !important;
+  }
+}
