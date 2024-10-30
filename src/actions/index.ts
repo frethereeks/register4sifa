@@ -17,12 +17,11 @@ export const handleRegisterUser = async (data: FormData): Promise<{ error: boole
         console.log({ firstname, lastname, email, phone, state, otherStates })
 
         const findUser = await prisma.user.findFirst({
-            where: {
-                OR: [{ phone: (`+234${phone.toLowerCase()}`).toLowerCase(), email: email.toLowerCase(), }]
-            }
+            where: { phone: (`+234${phone.toLowerCase()}`).toLowerCase() },
+            orderBy: { createdAt: "desc" }
         })
         if (findUser) {
-            return { error: true, message: `Someone with this email or phone number is already registered. Please, check and try again` }
+            return { error: true, message: `This phone number is already registered with us. Please, check and try again` }
         }
         else {
             await prisma.user.create({
@@ -37,17 +36,17 @@ export const handleRegisterUser = async (data: FormData): Promise<{ error: boole
     }
 }
 
-export const fetchUsers = async (): Promise<{ error: boolean; message: string; users: User[]} | undefined> => {
+export const fetchUsers = async (): Promise<{ error: boolean; message: string; users: User[] } | undefined> => {
     try {
         const users = await prisma.user.findMany() as User[]
         if (users.length) {
-            return {error: false, message: 'Users record retrieved successfully', users}
+            return { error: false, message: 'Users record retrieved successfully', users }
         }
         else {
-            return {error: true, message: 'There is no record of registered users in this database', users}
+            return { error: true, message: 'There is no record of registered users in this database', users }
         }
     } catch (error) {
         console.log('error', error)
-        return {error: true, message: "Something went wrong. Please, try again.", users: []}
+        return { error: true, message: "Something went wrong. Please, try again.", users: [] }
     }
 }

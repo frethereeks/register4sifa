@@ -26,8 +26,8 @@ export default function Home() {
                 <h4 className="text-primary text-xl lg:text-2xl font-exo font-semibold py-2">Requirements</h4>
                 <div className="flex flex-col gap-1 lg:gap-2">
                   {
-                    ["Ages 18 - 35", "Interest to learn and upskill", "Basic literacy", "Minimum of 3years experience in trade of interest"].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
+                    ["Ages 18 - 35", "Interest to learn and upskill", "Basic literacy", "Minimum of 3years experience in trade of interest"].map((item) => (
+                      <div key={item} className="flex items-center gap-2">
                         <div className="h-2.5 w-2.5 bg-tertiary rounded-sm flex-shrink-0"></div>
                         <p className="text-base lg:text-lg text-sitetext">{item}</p>
                       </div>
@@ -39,8 +39,8 @@ export default function Home() {
                 <h4 className="text-primary text-xl lg:text-2xl font-exo font-semibold py-2">Available Trades</h4>
                 <div className="flex flex-col gap-1 lg:gap-2">
                   {
-                    ["Plumbing Installation", "Electrical Installation", "Tiling", "Painting", "Carpentry", "Masonry"].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2">
+                    ["Plumbing Installation", "Electrical Installation", "Tiling", "Painting", "Carpentry", "Masonry"].map((item) => (
+                      <div key={item} className="flex items-center gap-2">
                         <div className="h-2.5 w-2.5 bg-tertiary rounded-sm flex-shrink-0"></div>
                         <p className="text-base lg:text-lg text-sitetext">{item}</p>
                       </div>
@@ -56,7 +56,7 @@ export default function Home() {
         <div className="container mx-auto grid lg:grid-cols-2 gap-4 lg:gap-10">
           <aside className="flex-1 flex flex-col justify-center py-4 lg:py-10">
             <h4 className="text-dark text-xl lg:text-2xl font-semibold py-2 w-max border-b-4 border-tertiary/70">Register Here</h4>
-            <RegisterForm />
+            <RegisterForm key={"82035012zsd7245"} />
           </aside>
           <aside className="relative flex-1">
             <Image src={ASSETS_URL["man_and_woman_molding"]} alt={"man_and_woman_molding"} className="object-cover object-top" fill />

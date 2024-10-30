@@ -7,16 +7,18 @@ const allStates = ["Abuja-FCT", "Plateau", "Nasarawa", "Others"]
 
 export default function RegisterForm() {
     const [pending, setPending] = useState(false)
+    const [phone, setPhone] = useState<string>("")
     const [state, setState] = useState<string>()
     const [otherStates, setOtherStates] = useState("")
     const formRef = useRef<HTMLFormElement | null>(null)
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
+        if (phone.length !== 10 ) {
+            toast.error("Phone Number must be exactly 10 digits. Please, check and try again", { id: "123", duration: 5000 })
+            return
+        }
         setPending(true)
-        // if (state === "Others" && otherStates !== "") {
-        //     setState(otherStates)
-        // }
         const formData = new FormData(formRef.current!)
         const res = await handleRegisterUser(formData)
         try {
@@ -50,7 +52,7 @@ export default function RegisterForm() {
                 <label htmlFor="phone" className="text-xs lg:text-sm text-sitetext">Phone Number<span className="text-danger">*</span></label>
                 <div className="flex border border-sitetext/70 hover:border-sitetext/50 rounded-sm overflow-hidden">
                     <div className="py-1 pl-2 pr-3 border-r border-sitetext bg-dark text-white text-sm lg:text-base flex-shrink-0">+234</div>
-                    <input type="text" required name="phone" id="phone" placeholder='70681052815' className="flex-1 outline-none bg-transparent py-1 px-2 placeholder:opacity-60 placeholder:text-sm text-sm lg:text-base text-sitetext capitalize" maxLength={10} />
+                    <input type="text" required name="phone" value={phone} onChange={e => setPhone(e.target.value)} id="phone" placeholder='70681052815' className="flex-1 outline-none bg-transparent py-1 px-2 placeholder:opacity-60 placeholder:text-sm text-sm lg:text-base text-sitetext capitalize" maxLength={10} />
                 </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -62,9 +64,9 @@ export default function RegisterForm() {
                 <div className={`relative w-full ${state === "Others" ? 'after:absolute after:bg-slate-300/70 after:top-0 after:left-0 after:w-full after:h-full disabled:cursor-not-allowed after:z-10 after:select-none' : ''}`}>
                     <select onChange={e => setState(e.target.value)} value={state} name="state" id="state" className={`outline-none border border-sitetext/70 hover:border-sitetext/50 bg-transparent py-2 px-2 placeholder:opacity-60 placeholder:text-sm text-sm lg:text-base text-sitetext capitalize rounded-sm w-full`}>
                         {
-                            allStates.map(el => (
+                            allStates.map((el,i) => (
                                 <>
-                                    <option key={el} value={el} className="bg-transparent py-2 px-2 text-sitetext">{el}</option>
+                                    <option key={i.toString()} value={el} className="bg-transparent py-2 px-2 text-sitetext">{el}</option>
                                 </>
                             ))
                         }

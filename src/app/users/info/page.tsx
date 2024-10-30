@@ -3,6 +3,17 @@ import { UserList } from "@/components"
 import { fetchUsers } from '@/actions'
 import { ASSETS_URL } from '@/assets/images'
 import Image from 'next/image'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+    // metadataBase: new URL(defaultUrl),
+    title: "Register4SIFA :: User Record",
+    description: "Register4SIFA is an initiative intended to empower youths with skills and life long learning",
+    icons: {
+        icon: [{ url: "/ileap-logo.png", sizes: "any", type: "/image/x-icon" }],
+        apple: [{ url: "/ileap-logo.png" }]
+    },
+};
 
 export default async function UserDetails() {
     const data = await fetchUsers()
@@ -15,12 +26,12 @@ export default async function UserDetails() {
                 <div className="relative container mx-auto flex flex-col gap-10 px-4">
                     <div className="flex justify-between items-center gap-4 flex-wrap py-16">
                         <div data-aos-duration="1000" data-aos-delay="500" data-aos="fade-up">
-                            <h2 className="font-bold max-w-lg text-white text-3xl md:text-4xl">Solution. Collaboration. Innovation.</h2>
+                            <h2 className="font-bold max-w-lg text-white text-3xl md:text-4xl">Innovative. Employabiilty. Placement</h2>
                         </div>
                     </div>
                 </div>
             </section>
-            <section className="relative bg-white py-10 lg:py-20 px-4">
+            <section className="relative bg-backdrop py-10 lg:py-20 px-4">
                 <div className="container mx-auto relative">
                     <UserList users={data?.users} />
                 </div>
