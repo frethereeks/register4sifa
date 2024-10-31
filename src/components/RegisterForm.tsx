@@ -66,7 +66,7 @@ export default function RegisterForm() {
                         {
                             allStates.map((el,i) => (
                                 <>
-                                    <option key={i.toString()} value={el} className="bg-transparent py-2 px-2 text-sitetext">{el}</option>
+                                    <option key={`${el}-${i.toString()}`} value={el} className="bg-transparent py-2 px-2 text-sitetext">{el}</option>
                                 </>
                             ))
                         }

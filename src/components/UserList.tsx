@@ -36,6 +36,7 @@ export default function UserList({ users }: { users: User[] | undefined }) {
             const result = tableData.filter(el => el.firstname.toString().toLowerCase().includes(keyword) || el.lastname?.toString().toLowerCase().includes(keyword) || el.email?.toLowerCase().includes(keyword) || el.phone?.toString().toLowerCase().includes(keyword) || el.state.toString().toLowerCase().includes(keyword) || el.createdAt.toString().toLowerCase().includes(keyword))
             setTableData(() => [...result])
         }
+        setAllTableData(allTableData)
     }
 
     return (
