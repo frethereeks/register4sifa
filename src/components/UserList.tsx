@@ -3,16 +3,16 @@
 import React, { useRef, useState } from 'react'
 import moment from 'moment';
 import toast from 'react-hot-toast';
-import type { User } from '@prisma/client'
+import type { SifaUser } from '@prisma/client'
 import { FaClock } from "react-icons/fa"
 
 import { handleExport } from '@/lib/handleExport';
 import TableSearch from './TableSearch';
 
-export default function UserList({ users }: { users: User[] | undefined }) {
+export default function UserList({ users }: { users: SifaUser[] | undefined }) {
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const [allTableData, setAllTableData] =  useState<User[] | []>(users!)
-    const [tableData, setTableData] = useState<User[] | []>(users!)
+    const [allTableData, setAllTableData] =  useState<SifaUser[] | []>(users!)
+    const [tableData, setTableData] = useState<SifaUser[] | []>(users!)
 
     const handleDownload = async () => {
         try {

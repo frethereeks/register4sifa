@@ -14,7 +14,414 @@ datasource db {
 }
 
 
+enum AccountType {
+  Savings
+  Current
+  Fixed
+}
+
+enum ActivityStatus {
+  Pending
+  Running
+  Completed
+  Suspended
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum InvestmentType {
+  Silver
+  Gold
+  Platinum
+}
+
+enum MemberType {
+  Member
+  Admin
+}
+
+enum MemberRanking {
+  Super
+  Normal
+}
+
+enum MemberRating {
+  Basic
+  BasicPlus
+  Standard
+  StandardPlus
+  Premium
+  PremiumPlus
+}
+
+enum RelationshipStatus {
+  Single
+  Married
+  Divorced
+  Widow
+  Widower
+}
+
+enum Status {
+  Pending
+  Active
+  Disabled
+}
+
+enum TransStatus {
+  Pending
+  Running
+  Completed
+  Suspended
+  Overdue
+}
+
+enum TransVerdict {
+  Pending
+  Granted
+  Rejected
+  Cancelled
+}
+
+// <=== MODELS ===>
+model Member {
+  id               String          @id @default(uuid())
+  firstname        String          @db.VarChar(50)
+  middlename       String?         @db.VarChar(50)
+  lastname         String          @db.VarChar(50)
+  email            String          @unique @db.VarChar(100)
+  memberId         String          @unique @db.VarChar(15)
+  password         String          @db.VarChar(100)
+  image            String?         @db.LongText()
+  phone            String?         @unique @db.VarChar(15)
+  address          String?         @db.VarChar(200)
+  state            String?         @db.VarChar(200)
+  country          String?         @db.VarChar(200)
+  type             MemberType      @default(Member)
+  access           MemberRanking   @default(Normal)
+  status           Status          @default(Pending)
+  token            String?         @db.VarChar(40)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+  updatedBy        String?         @db.VarChar(50)
+  loanRating       MemberRating    @default(Basic)
+  accountDetails   AccountNumber[]
+  loans            Loan[]
+  savings          Saving[]
+  deposits         Deposit[]
+  withdrawals      Withdrawal[]
+  sentMessages     Message[]       @relation("sender")
+  receivedMessages Message[]       @relation("receiver")
+  investments      Investment[]    @relation("investment")
+  beneficiary      Investment[]    @relation("beneficiary")
+  balance          Int             @default(0)
+  // Transactions     Transactions[]
+  MemberInfo       MemberInfo?
+
+  @@index([id, memberId])
+}
+
+model AccountNumber {
+  id            String      @id @default(uuid())
+  banker        String      @db.VarChar(100)
+  accountnumber String      @db.VarChar(20)
+  bvn           Int?        @db.Int
+  type          AccountType @default(Savings)
+  owner         Member?     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId      String?     @unique
+}
+
+model MemberInfo {
+  id                    String             @id @default(uuid())
+  relationshipStatus    RelationshipStatus @default(Single)
+  nameOfSpouse          String             @db.VarChar(100)
+  nin                   Int?               @db.Int
+  occupation            String             @db.VarChar(100)
+  jobStatus             String             @db.VarChar(100)
+  gender                Gender             @default(Male)
+  country               String             @db.VarChar(100)
+  stateOfOrigin         String             @db.VarChar(100)
+  stateOfResidence      String             @db.VarChar(100)
+  lga                   String             @db.VarChar(100)
+  nextOfKin             String             @db.VarChar(100)
+  nextOfKinRelationship String             @db.VarChar(100)
+  nextOfKinPhone        String             @db.VarChar(15)
+  owner                 Member?            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId              String?            @unique
+}
+
+model Contact {
+  id         String     @id @default(cuid())
+  firstname  String
+  middlename String?
+  lastname   String
+  email      String
+  phone      String
+  message    String     @db.LongText()
+  status     ReadStatus @default(Unread)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+  updatedBy  String?
+}
+
+model Deposit {
+  id          String       @id @default(uuid())
+  amount      Int          @db.Int
+  interest    Int?         @default(0) @db.MediumInt
+  depositor   Member?      @relation(fields: [depositorId], references: [id], onDelete: Cascade)
+  depositorId String
+  status      TransStatus  @default(Pending)
+  verdict     TransVerdict @default(Pending)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  updatedBy   String?      @db.VarChar(50)
+}
+
+model Investment {
+  id            String         @id @default(uuid())
+  amount        Int            @db.Int
+  payback       Int?           @db.Int
+  interest      Int?           @db.MediumInt
+  type          InvestmentType @default(Silver)
+  status        TransStatus    @default(Pending)
+  verdict       TransVerdict   @default(Pending)
+  investor      Member         @relation("investment", fields: [investorId], references: [id], onDelete: Cascade)
+  investorId    String
+  beneficiary   Member?        @relation("beneficiary", fields: [beneficiaryId], references: [id], onDelete: Cascade)
+  beneficiaryId String?
+  nextDueDate   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  updatedBy     String?        @db.VarChar(50)
+}
+
+model Loan {
+  id           String       @id @default(uuid())
+  amount       Int          @db.MediumInt
+  interest     Int?         @default(0) @db.MediumInt
+  payback      Int?         @default(0) @db.MediumInt
+  loaner       Member?      @relation(fields: [loanerId], references: [id], onDelete: Cascade)
+  loanerId     String?
+  status       TransStatus  @default(Pending)
+  verdict      TransVerdict @default(Pending)
+  duration     Int          @default(14) @db.MediumInt
+  approvedDate DateTime?
+  dueDate      DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  updatedBy    String?      @db.VarChar(50)
+}
+
+model Saving {
+  id        String       @id @default(uuid())
+  amount    Int          @db.Int
+  interest  Int?         @default(0) @db.MediumInt
+  saver     Member?      @relation(fields: [saverId], references: [id], onDelete: Cascade)
+  saverId   String
+  status    TransStatus  @default(Pending)
+  verdict   TransVerdict @default(Pending)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @default(now()) @updatedAt
+  updatedBy String?      @db.VarChar(50)
+}
+
+model Message {
+  id               String   @id @default(uuid())
+  text             String
+  sender           Member   @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId         String
+  receiver         Member   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId       String
+  statusToReceiver String
+  statusToSender   String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+}
+
+model Withdrawal {
+  id           String       @id @default(uuid())
+  amount       Int          @db.Int
+  interest     Int?         @default(0) @db.MediumInt
+  withdrawer   Member?      @relation(fields: [withdrawerId], references: [id], onDelete: Cascade)
+  withdrawerId String
+  status       TransStatus  @default(Pending)
+  verdict      TransVerdict @default(Pending)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  updatedBy    String?      @db.VarChar(50)
+}
+
+// model Transactions {
+//   id               String   @id @default(uuid())
+//   amount           String
+//   interest         Int?     @db.MediumInt
+//   member           Member   @relation("sender", fields: [memberId], references: [id])
+//   memberId         String
+//   type             String
+//   receiverId       String
+//   statusToReceiver String
+//   createdAt        DateTime @default(now())
+//   updatedAt        DateTime @default(now()) @updatedAt
+// }
+
+// ===CTTI
+enum BatchType {
+  Morning
+  Afternoon
+  Evening
+}
+
+enum MainStatus {
+  Pending
+  Active
+  Suspended
+}
+
+enum ReadStatus {
+  Read
+  Unread
+}
+
+enum UserType {
+  User
+  Instructor
+  Admin
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  courses     Course[]
+  description String?
+  // description String? @db.VarChar(200) @default("We provide you expert instructors, guides,materials and resources to propel you into becoming a professional beyond the periphery while spliting the learning process easily consummable bits for a smooth and progressive understanding.")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  updatedBy   String?
+
+  @@unique([name])
+}
+
+model ContactMessage {
+  id         String     @id @default(cuid())
+  firstname  String
+  middlename String?
+  lastname   String
+  email      String
+  phone      String
+  country    String?
+  state      String?
+  message    String     @db.LongText()
+  status     ReadStatus @default(Unread)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+  updatedBy  String?
+}
+
+model Course {
+  id            String       @id @default(cuid())
+  title         String       @db.VarChar(100)
+  image         String?
+  price         Int?
+  duration      String
+  description   String?
+  // description String? @db.VarChar(200) @default("We provide you with guides, instructors, materials and resources to propel you into becoming a programming-and-development professional beyond the periphery while splitting the learning process easily consumable bits for a smooth and progressive understanding. By the end of the course, students will be able to boast a solid knowledge")
+  category      Category     @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  requisite     Json?
+  contents      Json?
+  status        MainStatus   @default(Active)
+  batches       Batch[]
+  // enquiry       Enquiry[]
+  instructorsId String?
+  rating        Rating[]
+  users         User?        @relation(fields: [userId], references: [id])
+  userId        String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+  updatedBy     String?
+  Instructor    Instructor[]
+}
+
+model Instructor {
+  id       String  @id @default(cuid())
+  user     User?   @relation(fields: [userId], references: [id])
+  userId   String
+  course   Course? @relation(fields: [courseId], references: [id])
+  courseId String? @unique
+}
+
+model Batch {
+  id        String    @id @default(cuid())
+  startDate DateTime
+  month     String
+  type      BatchType @default(Morning)
+  course    Course?   @relation(fields: [courseId], references: [id])
+  courseId  String
+}
+
+model Enquiry {
+  id         String     @id @default(cuid())
+  firstname  String
+  middlename String?
+  lastname   String
+  email      String
+  phone      String?
+  image      String?
+  type       UserType   @default(User)
+  message    String     @db.LongText()
+  country    String?
+  state      String?
+  status     ReadStatus @default(Unread)
+  // course     Course     @relation(fields: [courseId], references: [id])
+  courseId   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+  updatedBy  String?
+}
+
 model User {
+  id          String       @id @default(cuid())
+  firstname   String
+  middlename  String?
+  lastname    String
+  email       String       @unique
+  phone       String       @unique
+  password    String
+  image       String?      @db.LongText()
+  address     String?      @db.MediumText()
+  country     String?
+  state       String?
+  status      MainStatus   @default(Pending)
+  type        UserType     @default(User)
+  course      Instructor[]
+  enrolledFor Course[]
+  token       String?      @db.VarChar(40)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+  updatedBy   String?
+}
+
+model Rating {
+  id         String   @id @default(cuid())
+  firstname  String
+  middlename String?
+  lastname   String
+  email      String
+  course     Course   @relation(fields: [courseId], references: [id])
+  courseId   String
+  value      Int
+  text       String   @db.VarChar(300)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  updatedBy  String?
+}
+
+// SIFA USER
+
+model SifaUser {
   id String @id @default(cuid())
   firstname String
   lastname String

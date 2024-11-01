@@ -18,7 +18,7 @@ export default function Home() {
       <section className="py-10 lg:py-20 px-4 bg-white">
         <div className="container mx-auto grid lg:grid-cols-2 gap-4 lg:gap-10">
           <aside className="relative">
-            <Image src={ASSETS_URL["man_and_woman_molding"]} alt={"man_and_woman_molding"} className="object-cover object-top -scale-x-100" fill />
+            <Image src={ASSETS_URL["man_and_woman_welding"]} alt={"man_and_woman_welding"} className="object-cover object-top" fill />
           </aside>
           <aside className="flex flex-col justify-center py-4 lg:py-10">
             <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-10 lg:gap-10">

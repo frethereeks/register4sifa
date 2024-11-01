@@ -51,7 +51,7 @@ export default function RegisterForm() {
             <div className="flex flex-col gap-1">
                 <label htmlFor="phone" className="text-xs lg:text-sm text-sitetext">Phone Number<span className="text-danger">*</span></label>
                 <div className="flex border border-sitetext/70 hover:border-sitetext/50 rounded-sm overflow-hidden">
-                    <div className="py-1 pl-2 pr-3 border-r border-sitetext bg-dark text-white text-sm lg:text-base flex-shrink-0">+234</div>
+                    <div className="py-1 pl-2 pr-3 border-r border-sitetext bg-dark text-white text-sm lg:text-sm flex-shrink-0">+234</div>
                     <input type="text" required name="phone" value={phone} onChange={e => setPhone(e.target.value)} id="phone" placeholder='70681052815' className="flex-1 outline-none bg-transparent py-1 px-2 placeholder:opacity-60 placeholder:text-sm text-sm lg:text-base text-sitetext capitalize" maxLength={10} />
                 </div>
             </div>

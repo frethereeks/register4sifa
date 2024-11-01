@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache";
 // import nodeMailer from 'nodemailer'
-import type { User } from "@prisma/client"
+import type { SifaUser } from "@prisma/client"
 
 
 export const handleRegisterUser = async (data: FormData): Promise<{ error: boolean; message: string; } | undefined> => {
@@ -24,7 +24,7 @@ export const handleRegisterUser = async (data: FormData): Promise<{ error: boole
             return { error: true, message: `This phone number is already registered with us. Please, check and try again` }
         }
         else {
-            await prisma.user.create({
+            await prisma.sifaUser.create({
                 data: { firstname, lastname, email: email.toLowerCase(), phone: `+234${phone.toLowerCase()}`, state: state === "Others" ? otherStates : state }
             })
             revalidatePath("/")
@@ -36,9 +36,9 @@ export const handleRegisterUser = async (data: FormData): Promise<{ error: boole
     }
 }
 
-export const fetchUsers = async (): Promise<{ error: boolean; message: string; users: User[] } | undefined> => {
+export const fetchUsers = async (): Promise<{ error: boolean; message: string; users: SifaUser[] } | undefined> => {
     try {
-        const users = await prisma.user.findMany() as User[]
+        const users = await prisma.user.findMany() as SifaUser[]
         if (users.length) {
             return { error: false, message: 'Users record retrieved successfully', users }
         }
